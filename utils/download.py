@@ -93,7 +93,7 @@ class Downloader(SingletonInstance):
                     if resp.status < 300:
                         async with aiofiles.open(f"{self.filename}.fragment{idx}", mode="wb") as f:
                             async for data in resp.content.iter_chunked(chunk_size):
-                                if self.thread_event.is_set():
+                                if self.thread_event and self.thread_event.is_set():
                                     break
                                 self.downloaded_filesize += len(data)
                                 await f.write(data)
@@ -111,7 +111,7 @@ class Downloader(SingletonInstance):
                     if resp.status < 300:
                         async with aiofiles.open(f"{self.filename}", mode="wb") as f:
                             async for data in resp.content.iter_chunked(chunk_size):
-                                if self.thread_event.is_set():
+                                if self.thread_event and self.thread_event.is_set():
                                     break
                                 self.downloaded_filesize += len(data)
                                 await f.write(data)
