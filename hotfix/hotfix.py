@@ -95,7 +95,7 @@ class HotfixPatcher(SingletonInstance):
 
         for root, dirs, files in os.walk("./temp"):
             for name in files:
-                if not event.is_set():
+                if event.is_set():
                     return
                 self.applied_files_num += 1
                 filename_with_folder = os.path.join(root.replace("./temp", ""), name)[1:]
