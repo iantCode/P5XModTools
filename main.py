@@ -15,6 +15,7 @@ from ui.install_mod import mod_install
 from ui.uninstall_mod import mod_uninstall
 from ui.install_launcher import launcher_download_and_install
 from ui.install_client import client_download_and_install
+from ui.install_hotfix import hotfix_download_and_install
 from utils.clean import remove_temp_files, environment_clean
 from utils.download import Downloader
 from utils.settings import Setting
@@ -114,7 +115,7 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
     
     def hotfix_button_clicked(self):
         if self.processing == Processing.NO:
-            t = Thread(target=lambda: self.hotfix_download_and_install(), daemon=True)
+            t = Thread(target=hotfix_download_and_install, args=(self, self.stop_event_thread), daemon=True)
             t.start()
 
 
