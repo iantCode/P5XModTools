@@ -79,7 +79,7 @@ class HotfixPatcher(SingletonInstance):
         
 
     async def download_hotfix(self, event: Event):
-        downloader = Downloader()
+        downloader = Downloader.instance()
         await downloader.download(self.target_url, "temp.zpf", event)
         extract_zst("temp.zpf", "./temp")
         safe_remove("./temp.zpf")
