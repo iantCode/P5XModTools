@@ -70,6 +70,7 @@ class Downloader(SingletonInstance):
 
             result = await asyncio.gather(*gathered_func)
             if not False in result:
+                safe_remove(self.filename)
                 with open(self.filename, 'a+b') as f:
                     for i in range(threads):
                         with open(f"{self.filename}.fragment{i}", 'rb') as f2:
