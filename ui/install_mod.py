@@ -21,16 +21,15 @@ def mod_install(dialog, event):
             dialog.update_browser_box(f"I cannot find P5X Client files. Make sure you download the game!")
             return
         
-        if not download.downloading:
-            dialog.processing = Processing.MOD
-            dialog.update_browser_box(f"Cleaning Environment...")
-            environment_clean()
-            dialog.update_browser_box(f"Downloading Tranlsation MOD")
-            asyncio.run(download.download(MOD_LINK[setting.region], "p5xmod.zip"))
-            dialog.update_browser_box(f"Extracting and installing the Translation MOD")
-            shutil.unpack_archive("p5xmod.zip", os.path.join(setting.game_location, "client", "pc"), "zip")
-            safe_remove('./p5xmod.zip')
-            dialog.update_browser_box(f"Installing Done!")
-            dialog.processing = Processing.NO
+        dialog.processing = Processing.MOD
+        dialog.update_browser_box(f"Cleaning Environment...")
+        environment_clean()
+        dialog.update_browser_box(f"Downloading Tranlsation MOD")
+        asyncio.run(download.download(MOD_LINK[setting.region], "p5xmod.zip"))
+        dialog.update_browser_box(f"Extracting and installing the Translation MOD")
+        shutil.unpack_archive("p5xmod.zip", os.path.join(setting.game_location, "client", "pc"), "zip")
+        safe_remove('./p5xmod.zip')
+        dialog.update_browser_box(f"Installing Done!")
+        dialog.processing = Processing.NO
     except:
         dialog.processing = Processing.NO
