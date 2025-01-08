@@ -85,7 +85,7 @@ class HotfixPatcher(SingletonInstance):
         safe_remove("./temp.zpf")
     
 
-    def apply_patch(self):
+    def apply_patch(self, event: Event):
         setting = Setting.instance()
         self.vfile = VFile.instance()
         self.vfile.read()
@@ -95,6 +95,8 @@ class HotfixPatcher(SingletonInstance):
 
         for root, dirs, files in os.walk("./temp"):
             for name in files:
+                if not event.is_set():
+                    return
                 self.applied_files_num += 1
                 filename_with_folder = os.path.join(root.replace("./temp", ""), name)[1:]
                 if filename_with_folder.endswith(".patch"):

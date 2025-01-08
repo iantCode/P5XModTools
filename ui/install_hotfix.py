@@ -37,5 +37,5 @@ def hotfix_download_and_install(dialog, event: Event):
         else:
             dialog.update_browser_box(f"No new hotfix available.")
         dialog.processing = Processing.NO
-    except:
+    except Exception as e:
         dialog.processing = Processing.NO
