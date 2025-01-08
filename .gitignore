@@ -1,0 +1,7 @@
+__pycache__
+version.txt
+main.spec
+build
+dist
+pyinstaller
+hpatchz.exe
