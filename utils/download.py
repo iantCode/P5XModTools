@@ -48,7 +48,7 @@ class Downloader(SingletonInstance):
                 os.makedirs(os.path.dirname(self.filename))\
             
             self.downloaded_filesize = 0
-            if not self.filesize or self.filesize < 50 * 1000 * 1000:
+            if not self.filesize or self.filesize < 12 * 1000 * 1000:
                 result = await self.singlethread_download()
             else:
                 result = await self.multithread_download()
