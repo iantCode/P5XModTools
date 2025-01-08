@@ -32,6 +32,8 @@ def hotfix_download_and_install(dialog, event: Event):
             dialog.update_browser_box(f"Hotfix was successfully updated")
             dialog.update_browser_box(f"Please try hotfix update once more to make sure there are no available hotfixes.")
             dialog.processing = Processing.NO
+        elif target_version == -2:
+            dialog.update_browser_box(f"Timeout reached. Please try it later.")
         else:
             dialog.update_browser_box(f"No new hotfix available.")
         dialog.processing = Processing.NO

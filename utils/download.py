@@ -24,11 +24,15 @@ class Downloader(SingletonInstance):
 
 
     async def get_json_from_url(self, url: str, event: Event | None = None):
+        timeout = aiohttp.ClientTimeout(total=10)
         self.url = yarl.URL(url, encoded=True)
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as resp:
-                if resp.status < 300:
-                    return await resp.json()
+        try:
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(url) as resp:
+                    if resp.status < 300:
+                        return await resp.json()
+        except:
+            return None
 
 
     def check_download_status(self):

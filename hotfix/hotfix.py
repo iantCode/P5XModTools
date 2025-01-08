@@ -50,6 +50,9 @@ class HotfixPatcher(SingletonInstance):
         setting = Setting.instance()
         downloader = Downloader.instance()
         resp_json = await downloader.get_json_from_url(self.get_json_url())
+        if not resp_json:
+            self.target_version = -2
+            return -2
         if "PatchConfigData" in resp_json:
             self.target_version = resp_json["PatchConfigData"]["TargetVersion"]
             self.target_url = self.get_zpf_baseurl() + resp_json["PatchConfigData"]["PatchPath"]
