@@ -41,6 +41,7 @@ class ClientInstaller(SingletonInstance):
             tree = ET.parse('ResList.xml')
             self.reslist_xml_root = tree.getroot()
 
+            shutil.rmtree(os.path.join(setting.game_location, "client"), ignore_errors=True)
             result1 = await self.download_large_files(event)
             if result1:
                 result2 = await self.download_pak(event)

@@ -106,7 +106,7 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
     def client_button_clicked(self):
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
-                        "This will take a lot of time to download client. If you close this program during downloading, you should remove temporary files yourself. Do you want to continue?",
+                        "It will take a lot of time to download client.\nTHIS IS STILL IN BETA PHASE, SO IT WILL HAVE SOME ERROR WHILE DOWNLOADING IT.\nTHIS WILL REMOVE ALL OF CLIENT FILES.\nDo you want to continue?",
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
                 t = Thread(target=client_download_and_install, args=(self, self.stop_event_thread), daemon=True)
