@@ -139,7 +139,7 @@ class HotfixPatcher(SingletonInstance):
         safe_remove(os.path.join("temp", filename_with_folder))
 
         if os.path.exists('./temp.bytes'):
-            safe_remove(path="./temp.bytes")
+            safe_remove("./temp.bytes")
 
 
 def extract_zst(archive: Path, out_path: Path):

@@ -3,7 +3,7 @@ import shutil
 
 def safe_remove(dir):
     try:
-        os.remove(path=dir)
+        os.remove(dir)
     except:
         pass
 
