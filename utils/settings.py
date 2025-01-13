@@ -40,6 +40,13 @@ class Setting(SingletonInstance):
 
 
     def try_auto_detect_location(self):
+        from utils.filesystem import get_filelocation_from_reg
+        dirname = get_filelocation_from_reg()
+        if dirname and self.verify_client_location(dirname):
+            self.game_location = dirname
+            return True
+        
+        # Try old code if there's no Registry
         filename = REGION_MAP[self.region]["exe_name"]
         for drive in get_drives():
             for root, dirs, files in os.walk(f"{drive}:\\"):

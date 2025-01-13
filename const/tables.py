@@ -10,7 +10,8 @@ REGION_MAP = {
         "res_list": "https://nsywl-client-dev1.wmupd.com/clientRes/CN_OB_OFFICIAL/Version/Windows/version/{}/ResList.zip",
         "res_url": "https://nsywl-client-dev1.wmupd.com/clientRes/CN_OB_OFFICIAL/Res",
         "hotfix_url": "https://nsywl-client.wmupd.com/hotfix/27/{}/{}/{}.json",
-        "hotfix_base": "https://nsywl-client.wmupd.com/hotfix/27/"
+        "hotfix_base": "https://nsywl-client.wmupd.com/hotfix/27/",
+        "reg_location": "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\P5X"
     },
     Region.KR: {
         "exe_name": "P5XKORLauncher.exe",
@@ -21,7 +22,8 @@ REGION_MAP = {
         "res_list": "https://p5krcdn1.wmupd.com/clientRes/KROB_offical_PC/Version/Windows/version/{}/ResList.zip",
         "res_url": "https://p5krcdn2.wmupd.com/clientRes/KROB_offical_PC/Res",
         "hotfix_url": "https://p5krcdn1.wmupd.com/clientRes/{}/hotfix/27/{}/{}/{}.json",
-        "hotfix_base": "https://p5krcdn1.wmupd.com/clientRes/{}/hotfix/27/"
+        "hotfix_base": "https://p5krcdn1.wmupd.com/clientRes/{}/hotfix/27/",
+        "reg_location": "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\P5XKO"
     },
     Region.TW: {
         "exe_name": "P5XGATLauncher.exe",
@@ -32,7 +34,8 @@ REGION_MAP = {
         "res_list": "https://patchp5x1.iwplay.com.tw/clientRes/OB_offical_PC/Version/Windows/version/{}/ResList.zip",
         "res_url": "https://patchp5x1.iwplay.com.tw/clientRes/OB_offical_PC/Res",
         "hotfix_url": "https://patchp5x1.iwplay.com.tw/clientRes/{}/hotfix/27/{}/{}/{}.json",
-        "hotfix_base": "https://patchp5x1.iwplay.com.tw/clientRes/{}/hotfix/27/"
+        "hotfix_base": "https://patchp5x1.iwplay.com.tw/clientRes/{}/hotfix/27/",
+        "reg_location": "SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\P5XHMT"
     },
 }
 
