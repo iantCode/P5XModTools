@@ -6,6 +6,7 @@ from const.tables import REGION_MAP
 from utils.clean import safe_remove
 from utils.download import Downloader
 from utils.settings import Setting
+from utils.filesystem import md5
 from singleton.singleton import SingletonInstance
 from threading import Event
 
@@ -70,6 +71,9 @@ class ClientInstaller(SingletonInstance):
                     newfile = open(filename, 'wb')
                     newfile.write(tempFileData[int(entry.get('offset')):int(entry.get('offset')) + int(entry.get('size'))])
                     newfile.close()
+                    calculated_md5 = md5(filename)
+                    if calculated_md5 != entry.get('md5'):
+                        return False
                 tempFile.close()
                 safe_remove("temp.bytes")
             return True
@@ -87,7 +91,9 @@ class ClientInstaller(SingletonInstance):
                 os.makedirs(os.path.join(setting.game_location, os.path.dirname(filename)), exist_ok=True)
                 dlLink = f'{REGION_MAP[setting.region]["res_url"]}/{child.get('md5')[0]}/{child.get('md5')}.{child.get('filesize')}'
                 await downloader.download(dlLink, os.path.join(setting.game_location, filename), event)
-                await asyncio.sleep(0.8)
+                calculated_md5 = md5(os.path.join(setting.game_location, filename))
+                if calculated_md5 != child.get('md5'):
+                    return False
             return True
         except:
             return False
