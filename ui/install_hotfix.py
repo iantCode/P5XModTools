@@ -29,6 +29,14 @@ def hotfix_download_and_install(dialog, event: Event):
             dialog.update_browser_box(f"Downloading hotfix has finished, now extracting and patching the game.")
             dialog.processing = Processing.HOTFIX
             hotfix_patcher.apply_patch(event)
+            dialog.update_browser_box(f"Verifying the Patch...")
+            result, filename = hotfix_patcher.verify_checksum(event)
+            if not result:
+                dialog.update_browser_box(f"{filename} was badly patched. Please try it once again!")
+                environment_clean()
+                return
+            dialog.update_browser_box(f"Verifying Completed. Now moving the files")
+            hotfix_patcher.move_patch_to_client()
             dialog.update_browser_box(f"Hotfix was successfully updated")
             dialog.update_browser_box(f"Please try hotfix update once more to make sure there are no available hotfixes.")
             dialog.processing = Processing.NO

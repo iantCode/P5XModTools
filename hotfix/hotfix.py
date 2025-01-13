@@ -11,6 +11,7 @@ from const.enums import Region
 from const.tables import REGION_MAP
 from utils.settings import Setting
 from utils.download import Downloader
+from utils.filesystem import md5
 from singleton.singleton import SingletonInstance
 from vfile.vfile import VFile
 
@@ -86,7 +87,6 @@ class HotfixPatcher(SingletonInstance):
     
 
     def apply_patch(self, event: Event):
-        setting = Setting.instance()
         self.vfile = VFile.instance()
         self.vfile.read()
 
@@ -101,7 +101,11 @@ class HotfixPatcher(SingletonInstance):
                 filename_with_folder = os.path.join(root.replace("./temp", ""), name)[1:]
                 if filename_with_folder.endswith(".patch"):
                     self.apply_patch_to_file(filename_with_folder)
-                        
+
+    
+    def move_patch_to_client(self):
+        setting = Setting.instance()
+
         move(os.path.join('./temp',), os.path.join(setting.game_location, "client\\OuterPackage"))
         shutil.rmtree('./temp')
         zeus_data = os.path.join(setting.game_location, "client\\OuterPackage\\HotFixTemp\\zeus-hf-data.json")
@@ -110,6 +114,7 @@ class HotfixPatcher(SingletonInstance):
             zeus["ResVersion"] = self.target_version
         with open(zeus_data, "w", encoding="utf-8") as w:
             json.dump(zeus, w)
+        return None
 
     
     def apply_patch_to_file(self, filename_with_folder: str):
@@ -140,6 +145,43 @@ class HotfixPatcher(SingletonInstance):
 
         if os.path.exists('./temp.bytes'):
             safe_remove("./temp.bytes")
+
+
+    def verify_checksum(self, event: Event):
+        hash_list = self.get_checksum_list()
+        self.all_files_num = sum([len(files) for r, d, files in os.walk("./temp")])
+        self.applied_files_num = 0
+
+        for root, dirs, files in os.walk("./temp"):
+            for name in files:
+                if event.is_set():
+                    return
+                self.applied_files_num += 1
+                filename_with_folder = os.path.join(root.replace("./temp", ""), name)[1:].replace("\\", "/")
+                if filename_with_folder not in hash_list:
+                    continue
+                file_md5 = md5(os.path.join("temp", filename_with_folder))
+                if hash_list[filename_with_folder] != file_md5:
+                    return (False, filename_with_folder)
+        
+        return (True, "")
+
+
+    def get_checksum_list(self):
+        f = open('temp/checksum.txt', "r", encoding="utf-8")
+        hash_table = {}
+
+        _ = f.readline()
+        for i in f.readlines():
+            i = i.strip()
+            if i == "first package add content:":
+                break
+            i = i.replace("M: ", "").replace("+: ", "")
+            filename, file_hash = i.split("=")
+            hash_table[filename] = file_hash
+
+        return hash_table
+
 
 
 def extract_zst(archive: Path, out_path: Path):

@@ -1,5 +1,6 @@
 import os
 import winreg
+import hashlib
 from const.tables import REGION_MAP
 from utils.settings import Setting
 
@@ -16,3 +17,11 @@ def get_filelocation_from_reg():
         return os.path.dirname(winreg.QueryValueEx(keypath, "DisplayIcon")[0])
     except:
         return None
+    
+
+def md5(filename):
+    hash_md5 = hashlib.md5()
+    with open(filename, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
