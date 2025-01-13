@@ -1,5 +1,5 @@
 import asyncio
-from client.client_install import ClientInstaller
+from client.client_installer import ClientInstaller
 from const.enums import Processing
 from utils.clean import environment_clean, safe_remove
 from utils.settings import Setting

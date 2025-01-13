@@ -1,6 +1,6 @@
 import asyncio
 from const.enums import Processing
-from hotfix.hotfix import HotfixPatcher
+from hotfix.hotfix_installer import HotfixPatcher
 from utils.clean import environment_clean
 from utils.settings import Setting
 from threading import Event

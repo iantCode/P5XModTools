@@ -12,6 +12,7 @@ from threading import Event
 
 
 class ClientInstaller(SingletonInstance):
+    
     def get_client_version(self, event: Event):
         setting = Setting.instance()
         downloader = Downloader.instance()

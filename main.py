@@ -6,8 +6,8 @@ import time
 
 from const.enums import Region, Processing
 from dialogs.custom_dialog import CustomDialog
-from hotfix.hotfix import HotfixPatcher
-from launcher.launcher_install import LauncherInstaller
+from hotfix.hotfix_installer import HotfixPatcher
+from launcher.launcher_installer import LauncherInstaller
 from PyQt6.QtWidgets import QApplication,QWidget, QMessageBox
 from PyQt6 import uic
 from singleton.singleton import SingletonInstance

@@ -1,6 +1,6 @@
 import asyncio
 from const.enums import Processing
-from launcher.launcher_install import LauncherInstaller
+from launcher.launcher_installer import LauncherInstaller
 from utils.clean import environment_clean, safe_remove
 from utils.settings import Setting
 from threading import Event
