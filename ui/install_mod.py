@@ -1,16 +1,12 @@
-import asyncio
-import os
-import shutil
 from const.enums import Processing
-from const.tables import MOD_LINK
-from utils.clean import environment_clean, safe_remove
-from utils.download import Downloader
+from mod.mod_installer import ModInstaller
+from utils.clean import environment_clean
 from utils.settings import Setting
 from utils.filesystem import is_client_installed
 
 def mod_install(dialog, event):
-    download = Downloader.instance()
     setting = Setting.instance()
+    mod_installer = ModInstaller.instance()
 
     try:
         if setting.game_location == "":
@@ -24,12 +20,22 @@ def mod_install(dialog, event):
         dialog.processing = Processing.MOD
         dialog.update_browser_box(f"Cleaning Environment...")
         environment_clean()
+        if mod_installer.is_mod_installed():
+            dialog.update_browser_box(f"You already installed the mod. Please remove it first!")
+            dialog.processing = Processing.NO
+            return
         dialog.update_browser_box(f"Downloading Translation MOD")
-        asyncio.run(download.download(MOD_LINK[setting.region], "p5xmod.zip"))
+        mod_installer.download()
         dialog.update_browser_box(f"Extracting and installing the Translation MOD")
-        shutil.unpack_archive("p5xmod.zip", os.path.join(setting.game_location, "client", "pc"), "zip")
-        safe_remove('./p5xmod.zip')
+        mod_installer.extract()
+        dialog.update_browser_box(f"Checking the Program... Please Wait")
+        if not mod_installer.is_mod_installed():
+            dialog.update_browser_box(f"Looks like we had some error. Please try it again.")
+            dialog.processing = Processing.NO
+            return
+        environment_clean()
         dialog.update_browser_box(f"Installing Done!")
         dialog.processing = Processing.NO
-    except:
+    except Exception as e:
+        dialog.update_browser_box(str(e))
         dialog.processing = Processing.NO

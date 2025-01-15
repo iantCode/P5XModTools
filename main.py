@@ -74,6 +74,7 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
 
     
     def mod_button_clicked(self):
+        self.reset_browser_box()
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
                         "Are you sure want to download Translation Mod?", 
@@ -84,6 +85,7 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
 
 
     def mod_uninstall_button_clicked(self):
+        self.reset_browser_box()
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
                         "Are you sure want to uninstall Translation Mod?", 
@@ -94,6 +96,7 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
 
     
     def launcher_button_clicked(self):
+        self.reset_browser_box()
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
                         "It will take a lot of time to download launcher. If you close this program during downloading, you should remove temporary files yourself. Do you want to continue?", 
@@ -104,6 +107,7 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
 
 
     def client_button_clicked(self):
+        self.reset_browser_box()
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
                         "It will take a lot of time to download client.\nTHIS IS STILL IN BETA PHASE, SO IT WILL HAVE SOME ERROR WHILE DOWNLOADING IT.\nTHIS WILL REMOVE ALL OF CLIENT FILES.\nDo you want to continue?",
@@ -114,6 +118,7 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
 
     
     def hotfix_button_clicked(self):
+        self.reset_browser_box()
         if self.processing == Processing.NO:
             t = Thread(target=hotfix_download_and_install, args=(self, self.stop_event_thread), daemon=True)
             t.start()
@@ -124,6 +129,10 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
         self.browserEditor.verticalScrollBar().setValue(
             self.browserEditor.verticalScrollBar().maximum()
             )
+        
+    
+    def reset_browser_box(self):
+        self.browserEditor.setPlainText("")
 
 
     def change_region(self, value):

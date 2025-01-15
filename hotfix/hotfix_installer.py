@@ -11,7 +11,7 @@ from const.enums import Region
 from const.tables import REGION_MAP
 from utils.settings import Setting
 from utils.download import Downloader
-from utils.filesystem import md5
+from utils.filesystem import md5, move
 from utils.singleton import SingletonInstance
 from vfile.vfile import VFile
 
@@ -200,19 +200,3 @@ def extract_zst(archive: Path, out_path: Path):
         ofh.seek(0)
         with tarfile.open(fileobj=ofh) as z:
             z.extractall(out_path)
-
-def move(root_src_dir, root_dst_dir):
-    for src_dir, dirs, files in os.walk(root_src_dir):
-        dst_dir = src_dir.replace(root_src_dir, root_dst_dir, 1)
-        if not os.path.exists(dst_dir):
-            os.makedirs(dst_dir)
-        for file_ in files:
-            src_file = os.path.join(src_dir, file_)
-            dst_file = os.path.join(dst_dir, file_)
-            if os.path.exists(dst_file):
-                # in case of the src and dst are the same file
-                if os.path.samefile(src_file, dst_file):
-                    continue
-                safe_remove(dst_file)
-            shutil.move(src_file, dst_dir)
-            
