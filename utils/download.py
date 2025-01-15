@@ -3,7 +3,7 @@ import aiofiles
 import asyncio
 import os
 import yarl
-from singleton.singleton import SingletonInstance
+from utils.singleton import SingletonInstance
 from threading import Event
 from utils.clean import safe_remove
 

@@ -7,7 +7,7 @@ from const.tables import REGION_MAP
 from utils.settings import Setting
 from utils.download import Downloader
 from utils.clean import safe_remove
-from singleton.singleton import SingletonInstance
+from utils.singleton import SingletonInstance
 from threading import Event
 
 class LauncherInstaller(SingletonInstance):

@@ -5,12 +5,12 @@ import webbrowser
 import time
 
 from const.enums import Region, Processing
-from dialogs.custom_dialog import CustomDialog
+from utils.custom_dialog import CustomDialog
 from hotfix.hotfix_installer import HotfixPatcher
 from launcher.launcher_installer import LauncherInstaller
 from PyQt6.QtWidgets import QApplication,QWidget, QMessageBox
 from PyQt6 import uic
-from singleton.singleton import SingletonInstance
+from utils.singleton import SingletonInstance
 from ui.install_mod import mod_install
 from ui.uninstall_mod import mod_uninstall
 from ui.install_launcher import launcher_download_and_install

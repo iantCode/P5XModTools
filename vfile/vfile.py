@@ -1,5 +1,5 @@
 import os
-from singleton.singleton import SingletonInstance
+from utils.singleton import SingletonInstance
 from utils.settings import Setting
 
 class VFile(SingletonInstance):

@@ -5,7 +5,7 @@ import string
 from const.enums import Region
 from const.tables import REGION_MAP
 from ctypes import windll
-from singleton.singleton import SingletonInstance
+from utils.singleton import SingletonInstance
 
 # https://www.daniweb.com/programming/software-development/threads/518063/how-to-list-the-name-and-the-size-of-hard-driver-in-python
 def get_drives():

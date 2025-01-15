@@ -12,7 +12,7 @@ from const.tables import REGION_MAP
 from utils.settings import Setting
 from utils.download import Downloader
 from utils.filesystem import md5
-from singleton.singleton import SingletonInstance
+from utils.singleton import SingletonInstance
 from vfile.vfile import VFile
 
 from threading import Event

@@ -7,7 +7,7 @@ from utils.clean import safe_remove
 from utils.download import Downloader
 from utils.settings import Setting
 from utils.filesystem import md5
-from singleton.singleton import SingletonInstance
+from utils.singleton import SingletonInstance
 from threading import Event
 
 
