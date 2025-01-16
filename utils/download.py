@@ -59,7 +59,7 @@ class Downloader(SingletonInstance):
     async def multithread_download(self):
         try:
             gathered_func = []
-            threads = 12
+            threads = 16
             for i in range(threads):
                 start = self.filesize // threads * i
                 if i == threads - 1:

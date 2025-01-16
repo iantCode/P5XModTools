@@ -44,7 +44,7 @@ class LauncherInstaller(SingletonInstance):
         self.finished_file_count = 0
         self.downloading = True
         gathered_func = []
-        threads = 8
+        threads = 16
         for i in range(threads):
             start = 3 + self.filesize // threads * i
             if i == threads - 1:
