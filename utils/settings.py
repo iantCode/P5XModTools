@@ -21,7 +21,7 @@ def get_drives():
 
 class Setting(SingletonInstance):
     def __init__(self):
-        self.program_version = "0.1.7"
+        self.program_version = "0.2.0"
 
         self.game_location: str = ""
         self.region: Region = Region.CN
