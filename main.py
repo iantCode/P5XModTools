@@ -10,15 +10,17 @@ from hotfix.hotfix_installer import HotfixPatcher
 from launcher.launcher_installer import LauncherInstaller
 from PyQt6.QtWidgets import QApplication,QWidget, QMessageBox
 from PyQt6 import uic
+from PyQt6.QtCore import QThreadPool
 from utils.singleton import SingletonInstance
-from ui.install_mod import mod_install
-from ui.uninstall_mod import mod_uninstall
-from ui.install_launcher import launcher_download_and_install
-from ui.install_client import client_download_and_install
-from ui.install_hotfix import hotfix_download_and_install
+from ui.install_mod import ModInstallThread
+from ui.uninstall_mod import ModUninstallThread
+from ui.install_launcher import LauncherInstallThread
+from ui.install_client import ClientInstallThread
+from ui.install_hotfix import HotfixInstallThread
 from utils.clean import remove_temp_files, environment_clean
 from utils.download import Downloader
 from utils.settings import Setting
+from utils.worker import Worker
 from threading import Thread, Event
 
 forms = uic.loadUiType('main.ui')
@@ -34,9 +36,11 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
         self.processing = Processing.NO
         self.stop_update_thread = False
         self.stop_event_thread= Event()
+        self.threadpool = QThreadPool()
+        self.worker = None
 
-        self.update_status_thread = Thread(target=lambda: asyncio.run(self.get_update_status()), daemon=True)
-        self.update_status_thread.start()
+        update_status_thread = Worker(self.get_update_status)
+        self.threadpool.start(update_status_thread)
 
 
     def init_ui(self):
@@ -74,55 +78,59 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
 
     
     def mod_button_clicked(self):
-        self.reset_browser_box()
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
                         "Are you sure want to download Translation Mod?", 
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
-                t = Thread(target=mod_install, args=(self, self.stop_event_thread), daemon=True)
-                t.start()
+                self.reset_browser_box()
+                self.worker = ModInstallThread(self, self.stop_event_thread)
+                self.worker.update_signal.connect(self.update_browser_box)
+                self.worker.start()
 
 
     def mod_uninstall_button_clicked(self):
-        self.reset_browser_box()
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
                         "Are you sure want to uninstall Translation Mod?", 
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
-                t = Thread(target=mod_uninstall, args=(self, self.stop_event_thread), daemon=True)
-                t.start()
+                self.reset_browser_box()
+                self.worker = ModUninstallThread(self, self.stop_event_thread)
+                self.worker.update_signal.connect(self.update_browser_box)
+                self.worker.start()
 
     
     def launcher_button_clicked(self):
-        self.reset_browser_box()
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
                         "It will take a lot of time to download launcher. If you close this program during downloading, you should remove temporary files yourself. Do you want to continue?", 
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
-                t = Thread(target=launcher_download_and_install, args=(self, self.stop_event_thread), daemon=True)
-                t.start()
+                self.reset_browser_box()
+                self.worker = LauncherInstallThread(self, self.stop_event_thread)
+                self.worker.update_signal.connect(self.update_browser_box)
+                self.worker.start()
 
 
     def client_button_clicked(self):
-        self.reset_browser_box()
         if self.processing == Processing.NO:
             reply = QMessageBox.question(self, 'Message',
                         "It will take a lot of time to download client.\nTHIS IS STILL IN BETA PHASE, SO IT WILL HAVE SOME ERROR WHILE DOWNLOADING IT.\nTHIS WILL REMOVE ALL OF CLIENT FILES.\nDo you want to continue?",
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, QMessageBox.StandardButton.No)
             if reply == QMessageBox.StandardButton.Yes:
-                t = Thread(target=client_download_and_install, args=(self, self.stop_event_thread), daemon=True)
-                t.start()
+                self.reset_browser_box()
+                self.worker = ClientInstallThread(self, self.stop_event_thread)
+                self.worker.update_signal.connect(self.update_browser_box)
+                self.worker.start()
 
     
     def hotfix_button_clicked(self):
-        self.reset_browser_box()
         if self.processing == Processing.NO:
-            t = Thread(target=hotfix_download_and_install, args=(self, self.stop_event_thread), daemon=True)
-            t.start()
-
+            self.reset_browser_box()
+            self.worker = HotfixInstallThread(self, self.stop_event_thread)
+            self.worker.update_signal.connect(self.update_browser_box)
+            self.worker.start()
 
     def update_browser_box(self, value):
         self.browserEditor.appendPlainText(value)
@@ -145,9 +153,9 @@ class MainWindow(SingletonInstance, QWidget, forms[0]):
             self.regionComboBox.setCurrentIndex(setting.region.value)
         
 
-    async def get_update_status(self):
+    def get_update_status(self):
         while True:
-            await asyncio.sleep(random.randrange(30, 60) / 100)
+            time.sleep(random.randrange(30, 60) / 100)
             if self.stop_update_thread:
                 break
             if self.processing == Processing.MOD or self.processing == Processing.CLIENT:

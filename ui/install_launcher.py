@@ -1,37 +1,46 @@
 import asyncio
+from PyQt6.QtCore import QThread, pyqtSignal
 from const.enums import Processing
 from launcher.launcher_installer import LauncherInstaller
 from utils.clean import environment_clean, safe_remove
 from utils.settings import Setting
 from threading import Event
 
-def launcher_download_and_install(dialog, event: Event):
-    setting = Setting.instance()
-    launcher_installer = LauncherInstaller.instance()
+class LauncherInstallThread(QThread):
+    update_signal = pyqtSignal(str)  # 신호 정의
 
-    try:
-        if setting.game_location == "":
-            dialog.update_browser_box(f"You need to set the location of the game!")
-            return
-            
-        dialog.processing = Processing.LAUNCHER
-        dialog.update_browser_box(f"Cleaning Environment...")
-        environment_clean()
-        dialog.update_browser_box(f"Checking launcher version")
-        version = launcher_installer.get_latest_launcher_version(event)
-        if version:
-            dialog.update_browser_box(f"Newest version: {version}")
-            dialog.update_browser_box(f"Now Downloading the launcher. It will take some time.")
-            safe_remove('./version.ini')
-            result = asyncio.run(launcher_installer.install_launcher_from_server(event))
-            if result:
-                dialog.update_browser_box(f"Finish installing the launcher.")
+    def __init__(self, dialog, event):
+        super().__init__()
+        self.dialog = dialog
+        self.my_event = event
+
+    def run(self):
+        setting = Setting.instance()
+        launcher_installer = LauncherInstaller.instance()
+
+        try:
+            if setting.game_location == "":
+                self.update_signal.emit(f"You need to set the location of the game!")
+                return
+                
+            self.dialog.processing = Processing.LAUNCHER
+            self.update_signal.emit(f"Cleaning Environment...")
+            environment_clean()
+            self.update_signal.emit(f"Checking launcher version")
+            version = launcher_installer.get_latest_launcher_version(self.my_event)
+            if version:
+                self.update_signal.emit(f"Newest version: {version}")
+                self.update_signal.emit(f"Now Downloading the launcher. It will take some time.")
+                safe_remove('./version.ini')
+                result = asyncio.run(launcher_installer.install_launcher_from_server(self.my_event))
+                if result:
+                    self.update_signal.emit(f"Finish installing the launcher.")
+                else:
+                    self.update_signal.emit(f"There was some problem downloading the launcher. Please try once more!")
+                self.dialog.processing = Processing.NO
             else:
-                dialog.update_browser_box(f"There was some problem downloading the launcher. Please try once more!")
-            dialog.processing = Processing.NO
-        else:
-            dialog.update_browser_box(f"Something bad happened while getting launcher version")
-            dialog.processing = Processing.NO
-    except Exception as e:
-        dialog.update_browser_box(str(e))
-        dialog.processing = Processing.NO
+                self.update_signal.emit(f"Something bad happened while getting launcher version")
+                self.dialog.processing = Processing.NO
+        except Exception as e:
+            self.update_signal.emit(str(e))
+            self.dialog.processing = Processing.NO
